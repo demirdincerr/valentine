@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Will You Be My Valentine?</title>
+<style>
+body {
+    background-color: #ffe6f0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    padding-top: 100px;
+}
+
+h1 {
+    font-size: 40px;
+    color: #d63384;
+}
+
+button {
+    font-size: 20px;
+    padding: 10px 20px;
+    margin: 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+#yes {
+    background-color: #ff4d6d;
+    color: white;
+}
+
+#no {
+    background-color: gray;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Will You Be My Valentine? 💖</h1>
+
+<button id="yes" onclick="alert('YAYYY 🥰 I knew you would say yes!')">Yes 💕</button>
+<button id="no" onclick="alert('Error: This option is not available 😌')">No 🙃</button>
+
+</body>
+</html>
