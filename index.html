@@ -1,47 +1,333 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Will You Be My Valentine?</title>
-<style>
-body {
-    background-color: #ffe6f0;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    padding-top: 100px;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Will you be my Valentine?</title>
 
-h1 {
-    font-size: 40px;
-    color: #d63384;
-}
+  <style>
+    :root{
+      --bg1:#ffd6e7;
+      --bg2:#f7c3da;
+      --card:#ffffff;
+      --text:#1f1f1f;
+      --muted:#6b6b6b;
+      --yes:#ff2f6d;
+      --yes2:#ff6a98;
+      --shadow: 0 18px 50px rgba(0,0,0,.18);
+      --radius: 22px;
+    }
 
-button {
-    font-size: 20px;
-    padding: 10px 20px;
-    margin: 20px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(900px 600px at 50% 35%, rgba(255,255,255,.35), transparent),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
 
-#yes {
-    background-color: #ff4d6d;
-    color: white;
-}
+    .card{
+      width:min(620px, 92vw);
+      background: rgba(255,255,255,.86);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 34px 26px 28px;
+      text-align:center;
+      position:relative;
+    }
 
-#no {
-    background-color: gray;
-    color: white;
-}
-</style>
+    .icon{
+      width:76px;
+      height:76px;
+      margin: 0 auto 14px;
+      position:relative;
+    }
+    .icon .cat{
+      width:76px;height:76px;border-radius:50%;
+      background:#f3b57e;
+      position:absolute; inset:0;
+    }
+    .icon .ear{
+      width:18px;height:18px;background:#f3b57e;
+      position:absolute; top:6px; left:12px;
+      transform: rotate(35deg);
+      border-radius:4px;
+    }
+    .icon .eye{
+      width:7px;height:7px;border-radius:50%;
+      background:#1f1f1f;
+      position:absolute; top:34px;
+    }
+    .icon .eye.left{ left:28px; }
+    .icon .eye.right{ right:28px; }
+    .icon .nose{
+      width:10px;height:10px;border-radius:3px;
+      background:#ff5a86;
+      position:absolute; top:42px; left:50%;
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .icon .heart{
+      position:absolute;
+      right:-4px; top:-4px;
+      width:18px;height:18px;
+      background:#ff2f6d;
+      transform: rotate(45deg);
+      border-radius:4px;
+    }
+    .icon .heart:before, .icon .heart:after{
+      content:"";
+      position:absolute;
+      width:18px;height:18px;
+      background:#ff2f6d;
+      border-radius:50%;
+    }
+    .icon .heart:before{ left:-9px; top:0; }
+    .icon .heart:after{ left:0; top:-9px; }
+
+    h1{
+      margin: 0 0 18px;
+      font-size: 34px;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      text-transform: lowercase;
+    }
+
+    .btnArea{
+      position:relative;
+      margin: 10px auto 12px;
+      width:min(520px, 92%);
+      height:110px;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      font-weight:800;
+      border-radius: 999px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.15);
+      transition: transform .12s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #yesBtn{
+      position:absolute;
+      left: 80px;
+      top: 12px;
+      width: 190px;
+      height: 72px;
+      font-size: 26px;
+      color:#fff;
+      background: linear-gradient(135deg, var(--yes), var(--yes2));
+    }
+    #yesBtn:hover{ transform: translateY(-2px); }
+
+    #noBtn{
+      position:absolute;
+      right: 92px;
+      top: 38px;
+      width: 78px;
+      height: 34px;
+      font-size: 14px;
+      color:#222;
+      background: rgba(0,0,0,.08);
+      box-shadow:none;
+      border-radius: 10px;
+    }
+
+    .hint{
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hint em{ font-style:normal; color:#3f3f3f; }
+
+    /* result overlay */
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.45);
+      padding:18px;
+      z-index:50;
+    }
+
+    .popup{
+      width:min(720px, 94vw);
+      background:#fff;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      text-align:center;
+    }
+
+    .popupTop{
+      padding:18px 18px 8px;
+    }
+    .popupTop h2{
+      margin:0;
+      font-size: 26px;
+    }
+    .popupTop p{
+      margin:8px 0 0;
+      color:#555;
+    }
+
+    .photoWrap{
+      width:100%;
+      background:#111;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .photoWrap img{
+      width:100%;
+      max-height: 58vh;
+      object-fit: cover;
+      display:block;
+    }
+
+    .popupBottom{
+      padding:14px 18px 18px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .closeBtn{
+      padding:12px 18px;
+      border-radius: 12px;
+      background:#111;
+      color:#fff;
+      font-size:15px;
+      box-shadow:none;
+    }
+    .closeBtn:hover{ transform: translateY(-2px); }
+  </style>
 </head>
 
 <body>
+  <div class="card" id="card">
+    <div class="icon" aria-hidden="true">
+      <div class="cat"></div>
+      <div class="ear"></div>
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="nose"></div>
+      <div class="heart"></div>
+    </div>
 
-<h1>Will You Be My Valentine? 💖</h1>
+    <h1><span id="herName">nirali</span> will you be my valentine birtanem?</h1>
 
-<button id="yes" onclick="alert('YAYYY 🥰 I knew you would say yes!')">Yes 💕</button>
-<button id="no" onclick="alert('Error: This option is not available 😌')">No 🙃</button>
+    <div class="btnArea" id="btnArea">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
 
+    <div class="hint"><em>“No”</em> is not an option 😈</div>
+  </div>
+
+  <!-- Yes popup -->
+  <div class="overlay" id="overlay">
+    <div class="popup">
+      <div class="popupTop">
+        <h2>YAYYYYY 🥰</h2>
+        <p id="successText">Seni seviyorum askimm 💘</p>
+      </div>
+
+      <div class="photoWrap">
+        <!-- Put your photo file name here -->
+        <img id="ourPhoto" src="us.jpg" alt="Us">
+      </div>
+
+      <div class="popupBottom">
+        <button class="closeBtn" id="closeBtn">okayy 💞</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ PERSONALIZE
+    const HER_NAME = "Denoli";     // change to her name
+    const YOUR_NAME = "Demir";       // change to your name
+    const PHOTO_FILE = "us.jpg";   // change to your image file name in the repo
+
+    document.getElementById("herName").textContent = HER_NAME;
+    document.getElementById("ourPhoto").src = PHOTO_FILE;
+
+    // Elements
+    const btnArea = document.getElementById("btnArea");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const overlay = document.getElementById("overlay");
+    const closeBtn = document.getElementById("closeBtn");
+    const successText = document.getElementById("successText");
+
+    // Place No button randomly inside its area
+    function moveNoButton() {
+      const area = btnArea.getBoundingClientRect();
+      const btn = noBtn.getBoundingClientRect();
+
+      const padding = 8;
+      const maxX = area.width - btn.width - padding;
+      const maxY = area.height - btn.height - padding;
+
+      const x = padding + Math.random() * Math.max(0, maxX - padding);
+      const y = padding + Math.random() * Math.max(0, maxY - padding);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.right = "auto";
+    }
+
+    // Run away when cursor gets close (like the video)
+    function distance(ax, ay, bx, by) {
+      return Math.hypot(ax - bx, ay - by);
+    }
+
+    btnArea.addEventListener("mousemove", (e) => {
+      const btn = noBtn.getBoundingClientRect();
+      const bx = btn.left + btn.width / 2;
+      const by = btn.top + btn.height / 2;
+
+      const d = distance(e.clientX, e.clientY, bx, by);
+
+      // If the cursor gets within ~80px, run away
+      if (d < 80) moveNoButton();
+    });
+
+    // Mobile: if they try to tap No, it moves
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    // Clicking No also moves (just in case)
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    // Yes shows the photo overlay
+    yesBtn.addEventListener("click", () => {
+      successText.textContent = `Happy Valentine’s, ${HER_NAME} 💘 From ${YOUR_NAME}.`;
+      overlay.style.display = "flex";
+    });
+
+    closeBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
+
+    // Start position
+    moveNoButton();
+  </script>
 </body>
 </html>
